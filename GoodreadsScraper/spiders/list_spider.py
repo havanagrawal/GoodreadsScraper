@@ -1,6 +1,6 @@
 import scrapy
 
-from book_spider import BookSpider
+from .book_spider import BookSpider
 
 GOODREADS_URL_PREFIX = "https://www.goodreads.com"
 
