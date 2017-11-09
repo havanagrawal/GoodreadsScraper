@@ -1,9 +1,9 @@
 import scrapy
+from dateutil.parser import parse as dateutil_parse
 
 class BookSpider(scrapy.Spider):
 
     name = "book"
-    start_urls = ["https://www.goodreads.com/book/show/5470.1984"]
 
     def parse(self, response):
 
@@ -14,19 +14,28 @@ class BookSpider(scrapy.Spider):
         book_details['avg_ratings'] = float(response.css("span.average[itemprop=ratingValue]::text").extract_first().strip())
         book_details['genres'] = response.css("div.left>a[href*=genres]::text").extract()
 
-        num_pages = response.css("span[itemprop=numberOfPages]::text").extract_first().strip()
+        num_pages = response.css("span[itemprop=numberOfPages]::text").extract_first()
 
         if num_pages:
-            book_details['num_pages'] = num_pages.split()[0]
+            book_details['num_pages'] = num_pages.strip().split()[0]
 
         book_data = response.css("div#bookDataBox")
 
         book_details['awards'] = book_data.css(".award::text").extract()
         book_details['places'] = book_data.css("a[href*=places]::text").extract()
         book_details['character_names'] = book_data.css('a[href*="characters"]::text').extract()
-        book_details['language'] = book_data.css("div[itemprop=inLanguage]::text").extract_first().strip()
+        book_details['language'] = book_data.css("div[itemprop=inLanguage]::text").extract_first()
 
-        book_details['publish_date'] = response.css("nobr.greyText::text").extract_first().split()[-3:]
+        if book_details['language']:
+            book_details['language'].strip()
+
+
+        maybe_dates = response.css("div.row::text").extract()
+        maybe_dates = [s for s in maybe_dates if "published" in s.lower()]
+
+        published_dates = [dateutil_parse(date, fuzzy=True) for date in maybe_dates]
+
+        book_details['publish_date'] = published_dates
 
         feature_names = book_data.css("div.infoBoxRowTitle::text").extract()
         feature_values = book_data.css("div.infoBoxRowItem::text").extract()
