@@ -1,11 +1,14 @@
+"""Spider to extract information from a /book/show type page on Goodreads"""
+
 import scrapy
 from dateutil.parser import parse as dateutil_parse
 
 class BookSpider(scrapy.Spider):
-
+    """Extract information from a /book/show type page on Goodreads"""
     name = "book"
 
     def __init__(self):
+        super().__init__()
         self.books_parsed = 0
 
     def report_progress_every_n(self, n):
