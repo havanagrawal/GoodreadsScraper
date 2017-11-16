@@ -5,9 +5,9 @@ from collections import namedtuple
 AmazonBookDetail = namedtuple('AmazonBookDetail', ['kindle_price', 'amazon_product_id'])
 
 def main():
-    browser = make_chrome_browser()
     urls = ["https://www.goodreads.com/book/show/17212231-inferno"]#, "https://www.goodreads.com/book/show/13148921-bloodline", "https://www.goodreads.com/book/show/5470.1984", "https://www.goodreads.com/book/show/13651.The_Dispossessed"]
 
+    browser = make_chrome_browser()
     for url in urls:
         print(get_amazon_book_detail(browser, url))
 
@@ -39,7 +39,7 @@ def get_amazon_book_detail(browser, url, retries=0):
     kindle_price = element.text.split(" ")[-1]
 
     if not kindle_price and retries != 0:
-        print("Retrying for {}. #Retries left = {}".format(url, retries))
+        print(f"Retrying for {url}. #Retries left = {retries}")
         return get_amazon_book_detail(browser, url, retries - 1)
 
     return AmazonBookDetail(kindle_price, amzn_product_id)

@@ -7,9 +7,9 @@ def get_book_details_or_empty(browser, url):
     try:
         start = time()
         book_detail = get_amazon_book_detail(browser, url, retries=1)
-        end = time()
+        time_diff = time() - start
         print(book_detail)
-        print("Took {0:.2f}s for {1}".format(end - start, url))
+        print(f"Took {time_diff:.2f}s for {url}")
     except:
         return AmazonBookDetail(None, None)
 
