@@ -22,13 +22,25 @@ def make_chrome_browser():
 
     return browser
 
-def get_amazon_book_detail(browser, url):
+def get_amazon_book_detail(browser, url, retries=0):
+    """Retrieve the Kindle price and Amazon product ID from the Goodreads book URL
+
+        Occasionally, the webdriver can fail to retrieve the data even though it exists,
+        which can be resolved by providing a positive retry count.
+    """
+    # Prevent negative retries
+    retries = max(retries, 0)
+
     browser.get(url)
 
     element = browser.find_element_by_css_selector("a[data-asin]")
 
     amzn_product_id = element.get_attribute('data-asin')
     kindle_price = element.text.split(" ")[-1]
+
+    if not kindle_price and retries != 0:
+        print("Retrying for {}. #Retries left = {}".format(url, retries))
+        return get_amazon_book_detail(browser, url, retries - 1)
 
     return AmazonBookDetail(kindle_price, amzn_product_id)
 

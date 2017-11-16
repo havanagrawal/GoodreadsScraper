@@ -3,10 +3,10 @@ from time import sleep, time
 from amazon_price_extractor import get_amazon_book_detail, make_chrome_browser, AmazonBookDetail
 
 def get_book_details_or_empty(browser, url):
-    sleep(5)
+    #sleep(2)
     try:
         start = time()
-        book_detail = get_amazon_book_detail(browser, url)
+        book_detail = get_amazon_book_detail(browser, url, retries=1)
         end = time()
         print(book_detail)
         print("Took {0:.2f}s for {1}".format(end - start, url))
