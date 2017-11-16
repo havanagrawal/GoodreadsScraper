@@ -1,25 +1,26 @@
 import pandas as pd
 from time import sleep, time
-from amazon_price_extractor import get_kindle_price, make_chrome_browser
+from amazon_price_extractor import get_amazon_book_detail, make_chrome_browser, AmazonBookDetail
 
-def get_kindle_price_or_none(browser, url):
+def get_book_details_or_empty(browser, url):
     sleep(5)
     try:
         start = time()
-        price = get_kindle_price(browser, url)
+        book_detail = get_amazon_book_detail(browser, url)
         end = time()
-        print("Took {0:.2f}s for {}".format(end - start, url))
+        print(book_detail)
+        print("Took {0:.2f}s for {1}".format(end - start, url))
     except:
-        price = None
+        return AmazonBookDetail(None, None)
 
-    return price
+    return book_detail
 
 def main():
 
-    update = True
-    n = 100
+    update = False
+    n = 10
 
-    df = pd.read_csv('goodreads_extract_with_kindle_price.csv')
+    df = pd.read_csv('goodreads_extract.csv')
     df = df.head(n)
 
     if update:
@@ -32,7 +33,13 @@ def main():
 
     browser = make_chrome_browser()
 
-    df.loc[no_price_mask, 'kindle_price'] = df[no_price_mask].url.apply(lambda url: get_kindle_price_or_none(browser, url))
+    book_details = df[no_price_mask].url.apply(lambda url: get_book_details_or_empty(browser, url))
+
+    browser.quit()
+
+    df.loc[no_price_mask, 'kindle_price'] = book_details.map(lambda d: d.kindle_price)
+    df.loc[no_price_mask, 'amazon_product_id'] = book_details.map(lambda d: d.amazon_product_id)
+
     print(df.head())
     df.to_csv('goodreads_extract_with_kindle_price.csv')
 
