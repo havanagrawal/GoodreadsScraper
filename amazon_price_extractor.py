@@ -1,13 +1,15 @@
 from selenium import webdriver
 from datetime import datetime
+from collections import namedtuple
 
+AmazonBookDetail = namedtuple('AmazonBookDetail', ['kindle_price', 'amazon_product_id'])
 
 def main():
     browser = make_chrome_browser()
     urls = ["https://www.goodreads.com/book/show/17212231-inferno"]#, "https://www.goodreads.com/book/show/13148921-bloodline", "https://www.goodreads.com/book/show/5470.1984", "https://www.goodreads.com/book/show/13651.The_Dispossessed"]
 
     for url in urls:
-        print(get_kindle_price(browser, url))
+        print(get_amazon_book_detail(browser, url))
 
     browser.quit()
 
@@ -20,17 +22,15 @@ def make_chrome_browser():
 
     return browser
 
-def get_kindle_price(browser, url):
+def get_amazon_book_detail(browser, url):
     browser.get(url)
 
     element = browser.find_element_by_css_selector("a[data-asin]")
 
-    if not element:
-        return None
-
+    amzn_product_id = element.get_attribute('data-asin')
     kindle_price = element.text.split(" ")[-1]
 
-    return kindle_price
+    return AmazonBookDetail(kindle_price, amzn_product_id)
 
 if __name__ == "__main__":
     main()
