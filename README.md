@@ -1,10 +1,10 @@
 # GoodreadsScraper
 
-A small Python project to pull data from Goodreads using Scrapy
+A small Python project to pull data from Goodreads using Scrapy and Selenium
 
 ## What is it?
 
-This is a small Python + Scrapy based web scraper that pulls certain features about books from Goodreads. This can be used for collecting a large data set in a short period of time, for a pet data analysis/visualization project.
+This is a small Python + Scrapy + Selenium based web scraper that pulls certain features about books from Goodreads. This can be used for collecting a large data set in a short period of time, for a pet data analysis/visualization project.
 
 ## How To Run
 
