@@ -1,3 +1,4 @@
+import logging
 from selenium import webdriver
 from datetime import datetime
 from collections import namedtuple
@@ -39,7 +40,7 @@ def get_amazon_book_detail(browser, url, retries=0):
     kindle_price = element.text.split(" ")[-1]
 
     if not kindle_price and retries != 0:
-        print(f"Retrying for {url}. #Retries left = {retries}")
+        logging.info(f"Retrying for {url}. #Retries left = {retries}")
         return get_amazon_book_detail(browser, url, retries - 1)
 
     return AmazonBookDetail(kindle_price, amzn_product_id)
