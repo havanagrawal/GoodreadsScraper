@@ -1,6 +1,24 @@
+import argparse
 import pandas as pd
 from time import sleep, time
 from amazon_price_extractor import get_amazon_book_detail, make_chrome_browser, AmazonBookDetail
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='Extractor script to retrieve and populate Kindle prices of books')
+
+    parser.add_argument('-f', '--filename',
+                        required=True,
+                        help='CSV file with Goodreads data')
+
+    parser.add_argument('-o', '--output',
+                        required=True,
+                        help='Output CSV file name to which data will be extracted')
+
+    parser.add_argument('-u', '--update',
+                        action='store_true',
+                        default=False,
+                        help='If specified, it is assumed that the input file has a "kindle_price" column')
+    return parser.parse_args()
 
 def get_book_details_or_empty(browser, url):
     #sleep(2)
@@ -16,14 +34,11 @@ def get_book_details_or_empty(browser, url):
     return book_detail
 
 def main():
+    args = parse_args()
 
-    update = False
-    n = 10
+    df = pd.read_csv(args.filename)
 
-    df = pd.read_csv('goodreads_extract.csv')
-    df = df.head(n)
-
-    if update:
+    if args.update:
         no_price_mask = df['kindle_price'].isnull()
     else:
         no_price_mask = [True] * df.shape[0]
@@ -41,7 +56,7 @@ def main():
     df.loc[no_price_mask, 'amazon_product_id'] = book_details.map(lambda d: d.amazon_product_id)
 
     print(df.head())
-    df.to_csv('goodreads_extract_with_kindle_price.csv')
+    df.to_csv(args.output)
 
 if __name__ == "__main__":
     main()
