@@ -22,7 +22,7 @@ def main():
     clean_numbers(df)
     breakdown_publish_date(df)
 
-    df.drop_duplicates(inplace=True)
+    df.drop_duplicates(subset=['url'], inplace=True)
 
     print(df.head())
 
