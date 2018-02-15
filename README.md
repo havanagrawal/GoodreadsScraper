@@ -35,6 +35,8 @@ A useful feature is the Kindle price of the book on Amazon. Since this data is p
 
 `python populate_kindle_price.py -f goodreads.csv -o goodreads_with_kindle_price.csv`
 
+The reason we don't use Selenium for extracting the initial information is because Selenium is slow, since it loads up a browser and works through that. This is only an additional step to make the data slightly richer, but is completely optional.
+
 Now the data are ready to be analyzed, visualized and basically anything else you care to do with it!
 
 ## How to Contribute (if you really want to)
