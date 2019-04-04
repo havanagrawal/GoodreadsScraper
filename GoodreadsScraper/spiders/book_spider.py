@@ -36,12 +36,13 @@ class BookSpider(scrapy.Spider):
 
         loader.add_css('original_publish_year', 'nobr.greyText::text')
 
-        loader.add_css("genres", "div.left>a[href*=genres]::text")
+        loader.add_css("genres", 'div.left>a.bookPageGenreLink[href*="/genres/"]::text')
         loader.add_css("awards", "div#bookDataBox>.award::text")
         loader.add_css('characters', 'a[href*="/characters/"]::text')
         loader.add_css('places', 'div.infoBoxRowItem>a[href*=places]::text')
         loader.add_css('series', 'div.infoBoxRowItem>a[href*="/series/"]::text')
         loader.add_css('asin', 'div.infoBoxRowItem[itemprop=isbn]::text')
         loader.add_css('isbn', 'div.infoBoxRowItem>span[itemprop=isbn]::text')
+        loader.add_css('rating_histogram', 'script[type*="protovis"]::text')
 
         yield loader.load_item()

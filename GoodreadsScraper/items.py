@@ -41,6 +41,28 @@ def extract_year(s):
         return match.group(1)
 
 
+def extract_ratings(txt):
+    """Extract the rating histogram from embedded Javascript code
+
+        The embedded code looks like this:
+
+        |----------------------------------------------------------|
+        | renderRatingGraph([6, 3, 2, 2, 1]);                      |
+        | if ($('rating_details')) {                               |
+        |   $('rating_details').insert({top: $('rating_graph')})   |
+        |  }                                                       |
+        |----------------------------------------------------------|
+    """
+    codelines = "".join(txt).split(";")
+    rating_code = [line.strip() for line in codelines if "renderRatingGraph" in line]
+    if not rating_code:
+        return None
+    rating_code = rating_code[0]
+    rating_array = rating_code[rating_code.index("[") + 1 : rating_code.index("]")]
+    ratings = {5 - i:int(x) for i, x in enumerate(rating_array.split(","))}
+    return ratings
+
+
 class BookItem(scrapy.Item):
     # Scalars
     url = Field()
@@ -69,7 +91,7 @@ class BookItem(scrapy.Item):
     genres = Field(output_processor=Compose(set, list))
 
     # Dicts
-    rating_histogram = Field()
+    rating_histogram = Field(input_processor=MapCompose(extract_ratings))
 
 
 class BookLoader(ItemLoader):
