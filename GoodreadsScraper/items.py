@@ -115,6 +115,10 @@ class AuthorItem(scrapy.Item):
     birth_date = Field(input_processor=MapCompose(safe_parse_date))
     death_date = Field(input_processor=MapCompose(safe_parse_date))
 
+    avg_rating = Field(serializer=float)
+    num_ratings = Field(serializer=int)
+    num_reviews = Field(serializer=int)
+
     # Lists
     genres = Field(output_processor=Compose(set, list))
     influences = Field(output_processor=Compose(set, list))

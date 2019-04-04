@@ -55,6 +55,10 @@ class AuthorSpider(scrapy.Spider):
         loader.add_css("genres", 'div.dataItem>a[href*="/genres/"]::text')
         loader.add_css("influences", 'div.dataItem>span>a[href*="/author/show"]::text')
 
+        loader.add_css("avg_rating", 'span.average[itemprop="ratingValue"]::text')
+        loader.add_css("num_reviews", 'span[itemprop="reviewCount"]::attr(content)')
+        loader.add_css("num_ratings", 'span[itemprop="ratingCount"]::attr(content)')
+
         loader.add_css("about", 'div.aboutAuthorInfo')
 
         return loader.load_item()
