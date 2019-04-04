@@ -41,7 +41,7 @@ Run the following command to crawl all authors on the Goodreads website:
 scrapy crawl \
   --loglevel=INFO \
   --logfile=scrapy.log \
-  --output authors.json \
+  --output=authors.json \
   -a author_crawl=true \
   author
 ```
@@ -52,12 +52,12 @@ Run the following command to crawl all books from the first 25 pages of a Listop
 
 ```bash
 scrapy crawl \
-	--logfile=scrapy.log \
-	--output books.json \
-	-a start_page_no=1 \
-	-a end_page_no=25 \
-	-a list_name="1.Best_Books_Ever" \
-	list
+  --logfile=scrapy.log \
+  --output books.json \
+  -a start_page_no=1 \
+  -a end_page_no=25 \
+  -a list_name="1.Best_Books_Ever" \
+  list
 ```
 
 Alternatively, run the `run_scraper.sh` with 4 command line arguments; the list name, the start page, the end page, and the prefix with which you want the JSON file to be stored.
