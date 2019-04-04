@@ -1,7 +1,7 @@
 """Spider to extract information from a /book/show type page on Goodreads"""
 
 import scrapy
-from dateutil.parser import parse as dateutil_parse
+from ..items import BookItem, BookLoader
 
 class BookSpider(scrapy.Spider):
     """Extract information from a /book/show type page on Goodreads"""
@@ -13,57 +13,35 @@ class BookSpider(scrapy.Spider):
 
     def report_progress_every_n(self, n):
         if self.books_parsed % n == 0:
-            self.logger.info("{} books parsed till now.".format(self.books_parsed))
+            self.logger.info("%d books parsed till now.", self.books_parsed)
 
     def parse(self, response):
-
+        loader = BookLoader(BookItem(), response=response)
         self.books_parsed += 1
         self.report_progress_every_n(50)
 
-        book_details = {}
+        loader.add_value('url', response.request.url)
 
-        book_details['url'] = response.request.url
-        book_details['num_ratings'] = response.css("span.votes::text").extract_first().strip()
-        book_details['num_reviews'] = response.css("span.count::text").extract_first().strip()
-        book_details['avg_ratings'] = float(response.css("span.average[itemprop=ratingValue]::text").extract_first().strip())
-        book_details['genres'] = response.css("div.left>a[href*=genres]::text").extract()
-        book_details['title'] = response.css("#bookTitle::text").extract_first().strip()
-        author = response.css('a.authorName>span::text').extract_first()
+        loader.add_css("title", "#bookTitle::text")
+        loader.add_css("author", "a.authorName>span::text")
 
-        if author:
-            book_details['author'] = author.strip()
+        loader.add_css("num_ratings", "[itemprop=ratingCount]::attr(content)")
+        loader.add_css("num_reviews", "[itemprop=reviewCount]::attr(content)")
+        loader.add_css("avg_rating", "span[itemprop=ratingValue]::text")
+        loader.add_css("num_pages", "span[itemprop=numberOfPages]::text")
 
-        num_pages = response.css("span[itemprop=numberOfPages]::text").extract_first()
+        loader.add_css("language", "div[itemprop=inLanguage]::text")
+        loader.add_css('publish_date', 'div.row::text')
+        loader.add_css('publish_date', 'nobr.greyText::text')
 
-        if num_pages:
-            book_details['num_pages'] = num_pages.strip().split()[0]
+        loader.add_css('original_publish_year', 'nobr.greyText::text')
 
-        book_data = response.css("div#bookDataBox")
+        loader.add_css("genres", "div.left>a[href*=genres]::text")
+        loader.add_css("awards", "div#bookDataBox>.award::text")
+        loader.add_css('characters', 'a[href*="/characters/"]::text')
+        loader.add_css('places', 'div.infoBoxRowItem>a[href*=places]::text')
+        loader.add_css('series', 'div.infoBoxRowItem>a[href*="/series/"]::text')
+        loader.add_css('asin', 'div.infoBoxRowItem[itemprop=isbn]::text')
+        loader.add_css('isbn', 'div.infoBoxRowItem>span[itemprop=isbn]::text')
 
-        book_details['awards'] = book_data.css(".award::text").extract()
-        book_details['places'] = book_data.css("a[href*=places]::text").extract()
-        book_details['character_names'] = book_data.css('a[href*="characters"]::text').extract()
-        book_details['language'] = book_data.css("div[itemprop=inLanguage]::text").extract_first()
-
-        if book_details['language']:
-            book_details['language'].strip()
-
-
-        maybe_dates = response.css("div.row::text").extract()
-        maybe_dates = [s for s in maybe_dates if "published" in s.lower()]
-
-        published_dates = [dateutil_parse(date, fuzzy=True) for date in maybe_dates]
-
-        if published_dates:
-            book_details['publish_date'] = published_dates[0]
-
-        feature_names = book_data.css("div.infoBoxRowTitle::text").extract()
-        feature_values = book_data.css("div.infoBoxRowItem::text").extract()
-
-        desired_names = set(["ISBN"])
-
-        for name, value in zip(feature_names, feature_values):
-            if name in desired_names:
-                book_details[name.strip()] = value.strip()
-
-        yield book_details
+        yield loader.load_item()
