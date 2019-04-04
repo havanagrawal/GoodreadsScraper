@@ -10,9 +10,10 @@ import scrapy
 from scrapy import Field
 from scrapy.loader import ItemLoader
 
-from scrapy.loader.processors import Identity, Compose, MapCompose, TakeFirst
+from scrapy.loader.processors import Identity, Compose, MapCompose, TakeFirst, Join
 
 from dateutil.parser import parse as dateutil_parse
+from w3lib.html import remove_tags
 
 def num_page_extractor(num_pages):
     if num_pages:
@@ -20,7 +21,7 @@ def num_page_extractor(num_pages):
     return None
 
 
-def safe_parse(date):
+def safe_parse_date(date):
     try:
         date = dateutil_parse(date, fuzzy=True)
     except ValueError:
@@ -29,9 +30,9 @@ def safe_parse(date):
     return date
 
 
-def extract_dates(maybe_dates):
+def extract_publish_dates(maybe_dates):
     maybe_dates = [s for s in maybe_dates if "published" in s.lower()]
-    return [safe_parse(date) for date in maybe_dates]
+    return [safe_parse_date(date) for date in maybe_dates]
 
 
 def extract_year(s):
@@ -63,6 +64,14 @@ def extract_ratings(txt):
     return ratings
 
 
+def filter_empty(vals):
+    return [v.strip() for v in vals if v.strip()]
+
+
+def split_by_newline(txt):
+    return txt.split("\n")
+
+
 class BookItem(scrapy.Item):
     # Scalars
     url = Field()
@@ -76,7 +85,7 @@ class BookItem(scrapy.Item):
     num_pages = Field(input_processor=MapCompose(str.strip, num_page_extractor, int))
 
     language = Field(input_processor=MapCompose(str.strip))
-    publish_date = Field(input_processor=extract_dates)
+    publish_date = Field(input_processor=extract_publish_dates)
 
     original_publish_year = Field(input_processor=MapCompose(extract_year, int))
 
@@ -95,4 +104,28 @@ class BookItem(scrapy.Item):
 
 
 class BookLoader(ItemLoader):
+    default_output_processor = TakeFirst()
+
+
+class AuthorItem(scrapy.Item):
+    # Scalars
+    url = Field()
+
+    name = Field()
+    birth_date = Field(input_processor=MapCompose(safe_parse_date))
+    death_date = Field(input_processor=MapCompose(safe_parse_date))
+
+    # Lists
+    genres = Field(output_processor=Compose(set, list))
+    influences = Field(output_processor=Compose(set, list))
+
+    # Blobs
+    about = Field(
+        # Take the first match, remove HTML tags, convert to list of lines, remove empty lines, remove the "edit data" prefix
+        input_processor=Compose(TakeFirst(), remove_tags, split_by_newline, filter_empty, lambda s: s[1:]),
+        output_processor=Join()
+    )
+
+
+class AuthorLoader(ItemLoader):
     default_output_processor = TakeFirst()

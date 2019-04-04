@@ -1,6 +1,9 @@
 """Spider to extract information from a /book/show type page on Goodreads"""
 
 import scrapy
+
+from .spider_utils import report_progress_every_n
+from .author_spider import AuthorSpider
 from ..items import BookItem, BookLoader
 
 class BookSpider(scrapy.Spider):
@@ -9,16 +12,19 @@ class BookSpider(scrapy.Spider):
 
     def __init__(self):
         super().__init__()
+        self.author_spider = AuthorSpider()
         self.books_parsed = 0
 
-    def report_progress_every_n(self, n):
-        if self.books_parsed % n == 0:
-            self.logger.info("%d books parsed till now.", self.books_parsed)
-
     def parse(self, response):
-        loader = BookLoader(BookItem(), response=response)
         self.books_parsed += 1
-        self.report_progress_every_n(50)
+        report_progress_every_n(
+            logger=self.logger,
+            metric=self.books_parsed,
+            metric_name='books',
+            n=50
+        )
+
+        loader = BookLoader(BookItem(), response=response)
 
         loader.add_value('url', response.request.url)
 
@@ -46,3 +52,7 @@ class BookSpider(scrapy.Spider):
         loader.add_css('rating_histogram', 'script[type*="protovis"]::text')
 
         yield loader.load_item()
+
+        author_urls = response.css('a[href*="/author/show"]::attr(href)').extract()
+        for author_url in author_urls:
+            yield response.follow(author_url, callback=self.author_spider.parse)
