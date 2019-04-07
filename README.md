@@ -96,6 +96,34 @@ The reason we don't use Selenium for extracting the initial information is becau
 
 Now the data are ready to be analyzed, visualized and basically anything else you care to do with it!
 
+## Data Schema
+
+### Book
+
+| Column  | Description |
+|---------|-------------|
+| url     | The Goodreads URL |
+| title   | The title |
+| author  | The author \* \*\* |
+| asin | The [Amazon Standard Identifier Number](https://en.wikipedia.org/wiki/Amazon_Standard_Identification_Number) for this edition |
+| isbn | The [International Standard Book Number](https://en.wikipedia.org/wiki/International_Standard_Book_Number) for this edition |
+| num_ratings | The number of user ratings |
+| num_reviews | The number of user reviews |
+| avg_rating | The average rating (1 - 5) |
+| num_pages | The total number of pages |
+| language | The language for this edition |
+| publish_date | The publish date for this edition |
+| original_publish_year | The original year of publication for this novel |
+| genres | A list of genres/shelves |
+| awards | A list of awards (if any) won by this novel |
+| series | A list of series of which this novel is a part |
+| characters | An (incomplete) list of characters that occur in this novel |
+| places | A list of places (locations) that occur in this novel |
+| rating_histogram | A dictionary that has individual rating counts (5, 4, 3, 2, 1) |
+
+\* Goodreads [distinguishes between authors of the same name](https://www.goodreads.com/help/show/20-separating-authors-with-the-same-name) by introducing additional spaces between their names, so this column should be treated with special consideration during cleaning.
+\*\* While there may be multiple authors for a novel, the scraper only records the first one.
+
 ## Contributing
 
 Fixes and improvements are more than welcome, so raise an issue or send a PR!
