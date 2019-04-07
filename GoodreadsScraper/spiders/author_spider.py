@@ -12,7 +12,7 @@ class AuthorSpider(scrapy.Spider):
         super().__init__()
         self.author_crawl = author_crawl.lower() in {"true", "yes", "y"}
         if self.author_crawl:
-            self.start_urls = ["https://www.goodreads.com/"]
+            self.start_urls = ["https://www.goodreads.com/", "https://www.goodreads.com/author/on_goodreads"]
         self.authors_parsed = 0
 
     def parse(self, response):
