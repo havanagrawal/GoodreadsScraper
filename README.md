@@ -124,6 +124,23 @@ Now the data are ready to be analyzed, visualized and basically anything else yo
 \* Goodreads [distinguishes between authors of the same name](https://www.goodreads.com/help/show/20-separating-authors-with-the-same-name) by introducing additional spaces between their names, so this column should be treated with special consideration during cleaning.
 \*\* While there may be multiple authors for a novel, the scraper only records the first one.
 
+### Author
+
+| Column  | Description |
+|---------|-------------|
+| url     | The Goodreads URL |
+| name    | Name of the author |
+| birth_date | The author's birth date |
+| death_date | The author's death date |
+| genres | A list of genres this author writes about |
+| influences | A list of authors who influenced this author |
+| avg_rating | The average rating of all books by this author |
+| num_reviews | The total number of reviews for all books by this author |
+| num_ratings | The total number of ratings for all books by this author |
+| about | A short blurb about this author \* |
+
+\* This blurb is most likely incomplete because it is shortened, and the complete version is available only through a Javascript function (which Scrapy is incapable of executing). If this is a desired field, then the URL can be used in conjunction with a library like selenium to extract the entire blurb.
+
 ## Contributing
 
 Fixes and improvements are more than welcome, so raise an issue or send a PR!
