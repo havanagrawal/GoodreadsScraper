@@ -16,7 +16,13 @@ class AuthorSpider(scrapy.Spider):
         self.authors_parsed = 0
 
     def parse(self, response):
-        if response.request.url.startswith("https://www.goodreads.com/author/show/"):
+        url = response.request.url
+
+        # Don't follow blog pages
+        if "/blog?page=" in url:
+            return
+
+        if url.startswith("https://www.goodreads.com/author/show/"):
             yield self.parse_author(response)
 
         influence_author_urls = response.css('div.dataItem>span>a[href*="/author/show"]::attr(href)').extract()
