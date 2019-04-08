@@ -43,6 +43,5 @@ class BookSpider(scrapy.Spider):
 
         yield loader.load_item()
 
-        author_urls = response.css('a[href*="/author/show"]::attr(href)').extract()
-        for author_url in author_urls:
-            yield response.follow(author_url, callback=self.author_spider.parse)
+        author_url = response.css('a.authorName::attr(href)').extract_first()
+        yield response.follow(author_url, callback=self.author_spider.parse)
