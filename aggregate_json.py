@@ -6,20 +6,19 @@ from collections import namedtuple
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Aggregator script to clean and persist Goodreads data')
-    parser.add_argument('-f', '--filenames', nargs='+', help='Space separated JSON files extracted from Goodreads', required=True)
+    parser.add_argument('-f', '--filenames', nargs='+', help='Space separated JSONLINES files extracted from Goodreads', required=True)
     parser.add_argument('-o', '--output', help='Output CSV file name to which data will be extracted', required=True)
     return parser.parse_args()
 
 def main():
     args = parse_args()
 
-    dfs = [pd.read_json(filename) for filename in args.filenames]
+    dfs = [pd.read_json(filename, lines=True) for filename in args.filenames]
 
     df = pd.concat(dfs)
 
     encode_genres(df)
     drop_unnecessary_columns(df)
-    clean_numbers(df)
     breakdown_publish_date(df)
 
     df.drop_duplicates(subset=['url'], inplace=True)
@@ -44,10 +43,6 @@ def encode_genres(df):
 def drop_unnecessary_columns(df):
     df['num_awards'] = df['awards'].apply(len)
     df.drop(['genres', 'awards', 'places', 'character_names'], axis=1, inplace=True)
-
-def clean_numbers(df):
-    for col in ['num_reviews', 'num_ratings']:
-        df[col] = df[col].apply(lambda s: int(s.replace(",", "")))
 
 def breakdown_publish_date(df):
     Date = namedtuple('Date', ['year', 'month', 'day'])
