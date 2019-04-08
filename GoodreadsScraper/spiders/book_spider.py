@@ -2,7 +2,6 @@
 
 import scrapy
 
-from .spider_utils import report_progress_every_n
 from .author_spider import AuthorSpider
 from ..items import BookItem, BookLoader
 
@@ -13,17 +12,8 @@ class BookSpider(scrapy.Spider):
     def __init__(self):
         super().__init__()
         self.author_spider = AuthorSpider()
-        self.books_parsed = 0
 
     def parse(self, response):
-        self.books_parsed += 1
-        report_progress_every_n(
-            logger=self.logger,
-            metric=self.books_parsed,
-            metric_name='books',
-            n=50
-        )
-
         loader = BookLoader(BookItem(), response=response)
 
         loader.add_value('url', response.request.url)

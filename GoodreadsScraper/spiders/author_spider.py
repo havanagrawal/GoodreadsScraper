@@ -2,7 +2,6 @@
 
 import scrapy
 
-from .spider_utils import report_progress_every_n
 from ..items import AuthorItem, AuthorLoader
 
 class AuthorSpider(scrapy.Spider):
@@ -15,7 +14,6 @@ class AuthorSpider(scrapy.Spider):
         self.author_crawl = author_crawl.lower() in {"true", "yes", "y"}
         if self.author_crawl:
             self.start_urls = ["https://www.goodreads.com/", "https://www.goodreads.com/author/on_goodreads"]
-        self.authors_parsed = 0
 
     def parse(self, response):
         url = response.request.url
@@ -45,14 +43,6 @@ class AuthorSpider(scrapy.Spider):
 
 
     def parse_author(self, response):
-        self.authors_parsed += 1
-        report_progress_every_n(
-            logger=self.logger,
-            metric=self.authors_parsed,
-            metric_name='authors',
-            n=10
-        )
-
         loader = AuthorLoader(AuthorItem(), response=response)
         loader.add_value('url', response.request.url)
         loader.add_css("name", 'h1.authorName>span[itemprop="name"]::text')
