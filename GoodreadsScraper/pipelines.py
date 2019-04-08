@@ -22,7 +22,7 @@ class JsonLineItemSegregator(object):
         dispatcher.connect(self.spider_closed, signal=signals.spider_closed)
 
     def spider_opened(self, spider):
-        self.files = {name: open(name + "_" + self.output_file_suffix + '.jl', 'w+b') for name in self.types}
+        self.files = {name: open(name + "_" + self.output_file_suffix + '.jl', 'a+b') for name in self.types}
         self.exporters = {name: JsonLinesItemExporter(self.files[name]) for name in self.types}
 
         for e in self.exporters.values():
