@@ -25,14 +25,15 @@ class AuthorSpider(scrapy.Spider):
         if url.startswith("https://www.goodreads.com/author/show/"):
             yield self.parse_author(response)
 
-        influence_author_urls = response.css('div.dataItem>span>a[href*="/author/show"]::attr(href)').extract()
-
-        for author_url in influence_author_urls:
-            yield response.follow(author_url, callback=self.parse)
-
-        # If an author crawl is enabled, we crawl similar authors for this author
-        # As well as any URL that looks like an author bio page
+        # If an author crawl is enabled, we crawl similar authors for this author,
+        # authors that influenced this author,
+        # as well as any URL that looks like an author bio page
         if self.author_crawl:
+            influence_author_urls = response.css('div.dataItem>span>a[href*="/author/show"]::attr(href)').extract()
+
+            for author_url in influence_author_urls:
+                yield response.follow(author_url, callback=self.parse)
+
             similar_authors = response.css('a[href*="/author/similar"]::attr(href)').extract_first()
             if similar_authors:
                 yield response.follow(similar_authors, callback=self.parse)
@@ -40,7 +41,6 @@ class AuthorSpider(scrapy.Spider):
             all_authors_on_this_page = response.css('a[href*="/author/show"]::attr(href)').extract()
             for author_url in all_authors_on_this_page:
                 yield response.follow(author_url, callback=self.parse)
-
 
     def parse_author(self, response):
         loader = AuthorLoader(AuthorItem(), response=response)
