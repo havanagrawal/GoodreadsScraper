@@ -17,6 +17,11 @@ A small Python project to pull data from Goodreads using Scrapy and Selenium
 1. [How To Run](#how-to-run)
     1. [Author Crawls](#author-crawls)
     1. [List Crawls](#list-crawls)
+1. [Data Schema](#data-schema)
+    1. [Book](#book)
+    1. [Author](#author)
+1. [Note About Temporality](#note-about-temporality)
+1. [[Bonus] Project Ideas](#bonus-project-ideas)
 1. [Contributing](#contributing)
 
 ## Introduction
@@ -121,7 +126,7 @@ Now the data are ready to be analyzed, visualized and basically anything else yo
 | places | A list of places (locations) that occur in this novel |
 | rating_histogram | A dictionary that has individual rating counts (5, 4, 3, 2, 1) |
 
-\* Goodreads [distinguishes between authors of the same name](https://www.goodreads.com/help/show/20-separating-authors-with-the-same-name) by introducing additional spaces between their names, so this column should be treated with special consideration during cleaning.
+\* Goodreads [distinguishes between authors of the same name](https://www.goodreads.com/help/show/20-separating-authors-with-the-same-name) by introducing additional spaces between their names, so this column should be treated with special consideration during cleaning.  
 \*\* While there may be multiple authors for a novel, the scraper only records the first one.
 
 ### Author
@@ -131,15 +136,31 @@ Now the data are ready to be analyzed, visualized and basically anything else yo
 | url     | The Goodreads URL |
 | name    | Name of the author |
 | birth_date | The author's birth date |
-| death_date | The author's death date |
+| death_date | The author's death date \* |
 | genres | A list of genres this author writes about |
 | influences | A list of authors who influenced this author |
 | avg_rating | The average rating of all books by this author |
 | num_reviews | The total number of reviews for all books by this author |
 | num_ratings | The total number of ratings for all books by this author |
-| about | A short blurb about this author \* |
+| about | A short blurb about this author \*\* |
 
-\* This blurb is most likely incomplete because it is shortened, and the complete version is available only through a Javascript function (which Scrapy is incapable of executing). If this is a desired field, then the URL can be used in conjunction with a library like selenium to extract the entire blurb.
+\* In some cases the death date appears to be earlier than the birth date. This is most likely because the dates are BC, and should be inspected to validate this.  
+\*\* This blurb is most likely incomplete because it is shortened, and the complete version is available only through a Javascript function (which Scrapy is incapable of executing). If this is a desired field, then the URL can be used in conjunction with a library like selenium to extract the entire blurb.  
+
+## Note About Temporality
+
+Since Goodreads is a dynamic platform, with thousands of users constantly adding/deleting/updating reviews and ratings, the data collected through this scraper are valid at a particular timestamp only. Care must be taken while aggregating and deduplicating these data; in most cases one would want to retain the most recently scraped data, but this may change from a case-to-case basis.
+
+## [Bonus] Project Ideas
+
+What can you do with these data? Well, here are a few ideas:
+
+1. Each author has a set of other authors who influenced them, which can be naturally modeled as a directed graph. This graph can then either be visualized, OR one could perform graph analysis (community detection, central figures, determining oldest ancestor influencers, etc)
+2. One could perform hypothesis testing to confirm/reject if:
+    1. Female authors have the same number of ratings/reviews as male authors
+    1. Fantasy novels have a higher average rating than non-fiction novels
+3. As mentioned [here](#note-about-temporality), Goodreads is a dynamic platform, and thus if one chooses to collect these data periodically, one could generate time-series data, and observe trends for a particular novel/author over time. One could also perform event detection to determine if the author made a breakthrough in their writing career.  
+
 
 ## Contributing
 
