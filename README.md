@@ -54,22 +54,24 @@ Run the following command to crawl all authors on the Goodreads website:
 scrapy crawl \
   --loglevel=INFO \
   --logfile=scrapy.log \
-  --output=authors.json \
   -a author_crawl=true \
+  -s OUTPUT_FILE_SUFFIX=all \
   author
 ```
 
+By default, this will store the result to a file called `author_all.jl`
+
 ### List Crawls
 
-Run the following command to crawl all books from the first 25 pages of a Listopia list (say 1.Best_Books_Ever):
+Run the following command to crawl all books from the first 25 pages of a Listopia list (say 1.Best_Books_Ever). This will store all the books in a file called `book_best_001_025.jl`, and all authors in a file called `author_best_001_025.jl`.
 
 ```bash
 scrapy crawl \
   --logfile=scrapy.log \
-  --output books.json \
   -a start_page_no=1 \
   -a end_page_no=25 \
   -a list_name="1.Best_Books_Ever" \
+  -s OUTPUT_FILE_SUFFIX="best_001_025" \
   list
 ```
 
@@ -79,7 +81,7 @@ For instance:
 
 `./run_scraper.sh "1.Best_Books_Ever" 1 50 best_books`
 
-will crawl the first 50 pages of [this list](https://www.goodreads.com/list/show/1.Best_Books_Ever), which is approximately around 5k books, and generate a file called `best_books_01_50.json`.
+will crawl the first 50 pages of [this list](https://www.goodreads.com/list/show/1.Best_Books_Ever), which is approximately around 5k books, and generate a file called `best_books_01_50.jl`.
 
 The paging approach avoids hitting the Goodreads site too heavily. You should also ideally set the `DOWNLOAD_DELAY` to at least 1.
 
