@@ -119,9 +119,9 @@ Now the data are ready to be analyzed, visualized and basically anything else yo
 | language | The language for this edition |
 | publish_date | The publish date for this edition |
 | original_publish_year | The original year of publication for this novel |
+| series | The series of which this novel is a part |
 | genres | A list of genres/shelves |
 | awards | A list of awards (if any) won by this novel |
-| series | A list of series of which this novel is a part |
 | characters | An (incomplete) list of characters that occur in this novel |
 | places | A list of places (locations) that occur in this novel |
 | rating_histogram | A dictionary that has individual rating counts (5, 4, 3, 2, 1) |

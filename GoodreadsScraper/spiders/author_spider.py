@@ -9,6 +9,8 @@ class AuthorSpider(scrapy.Spider):
     name = "author"
 
     def __init__(self, author_crawl="False"):
+        # The default arg for author_crawl is intentionally a string
+        # since command line arguments to scrapy are strings
         super().__init__()
         self.author_crawl = author_crawl.lower() in {"true", "yes", "y"}
         if self.author_crawl:
