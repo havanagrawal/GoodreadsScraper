@@ -157,11 +157,11 @@ Since Goodreads is a dynamic platform, with thousands of users constantly adding
 
 What can you do with these data? Well, here are a few ideas:
 
-1. Each author has a set of other authors who influenced them, which can be naturally modeled as a directed graph. This graph can then either be visualized, OR one could perform graph analysis (community detection, central figures, determining oldest ancestor influencers, etc)
-2. One could perform hypothesis testing to confirm/reject if:
+1. Each author has a set of other authors who influenced them, which can be naturally modeled as a **directed graph**. This graph can then either be visualized, OR one could perform graph analysis (community detection, central figures, determining oldest ancestor influencers, etc)
+2. One could perform **hypothesis testing** to confirm/reject if:
     1. Female authors have the same number of ratings/reviews as male authors
     1. Fantasy novels have a higher average rating than non-fiction novels
-3. As mentioned [here](#note-about-temporality), Goodreads is a dynamic platform, and thus if one chooses to collect these data periodically, one could generate time-series data, and observe trends for a particular novel/author over time. One could also perform event detection to determine if the author made a breakthrough in their writing career.  
+3. As mentioned [here](#note-about-temporality), Goodreads is a dynamic platform, and thus if one chooses to collect these data periodically, one could generate **time-series data**, and observe trends for a particular novel/author over time. One could also perform event detection to determine if the author made a breakthrough in their writing career.  
 
 
 ## Contributing
