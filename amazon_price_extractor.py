@@ -1,7 +1,8 @@
 import logging
-from selenium import webdriver
-from datetime import datetime
 from collections import namedtuple
+from datetime import datetime
+
+from selenium import webdriver
 
 AmazonBookDetail = namedtuple('AmazonBookDetail', ['kindle_price', 'amazon_product_id'])
 

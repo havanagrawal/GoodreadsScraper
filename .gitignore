@@ -8,3 +8,6 @@
 *.jl
 *.csv
 *.json
+
+# Ignore virtualenv
+gscraper
