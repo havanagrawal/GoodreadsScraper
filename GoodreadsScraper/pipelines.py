@@ -6,20 +6,20 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 from scrapy.exporters import JsonLinesItemExporter
 from scrapy import signals
-from scrapy.xlib.pydispatch import dispatcher
 
 
 class JsonLineItemSegregator(object):
     @classmethod
     def from_crawler(cls, crawler):
         output_file_suffix = crawler.settings.get("OUTPUT_FILE_SUFFIX", default="")
-        return cls(output_file_suffix)
+        return cls(crawler, output_file_suffix)
 
-    def __init__(self, output_file_suffix):
+    def __init__(self, crawler, output_file_suffix):
         self.types = {"book", "author"}
         self.output_file_suffix = output_file_suffix
-        dispatcher.connect(self.spider_opened, signal=signals.spider_opened)
-        dispatcher.connect(self.spider_closed, signal=signals.spider_closed)
+        self.files = set()
+        crawler.signals.connect(self.spider_opened, signal=signals.spider_opened)
+        crawler.signals.connect(self.spider_closed, signal=signals.spider_closed)
 
     def spider_opened(self, spider):
         self.files = {name: open(name + "_" + self.output_file_suffix + '.jl', 'a+b') for name in self.types}
