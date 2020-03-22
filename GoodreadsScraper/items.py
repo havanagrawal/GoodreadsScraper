@@ -5,6 +5,7 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 import re
+import datetime
 
 import scrapy
 from scrapy import Field
@@ -15,6 +16,7 @@ from scrapy.loader.processors import Identity, Compose, MapCompose, TakeFirst, J
 from dateutil.parser import parse as dateutil_parse
 from w3lib.html import remove_tags
 
+
 def num_page_extractor(num_pages):
     if num_pages:
         return num_pages.split()[0]
@@ -23,7 +25,8 @@ def num_page_extractor(num_pages):
 
 def safe_parse_date(date):
     try:
-        date = dateutil_parse(date, fuzzy=True)
+        date = dateutil_parse(date, fuzzy=True, default=datetime.datetime.min)
+        date = date.strftime("%Y-%m-%d %H:%M:%S")
     except ValueError:
         date = None
 
