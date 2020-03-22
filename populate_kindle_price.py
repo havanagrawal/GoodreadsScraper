@@ -40,7 +40,6 @@ def main():
     args = parse_args()
 
     df = pd.read_csv(args.filename)
-    df = df.head(10)
 
     if args.update:
         no_price_mask = df['kindle_price'].isnull()
@@ -65,7 +64,7 @@ def main():
 
     logging.info(f"Successfully retrieved Kindle price for {successful}/{total} records")
     logging.info(f"Writing output to {args.output}")
-    df.to_csv(args.output)
+    df.to_csv(args.output, index=False)
 
 if __name__ == "__main__":
     main()
