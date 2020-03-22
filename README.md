@@ -32,16 +32,15 @@ With appropriate controls, the crawler can collect metadata for ~50 books per mi
 
 ## Installation
 
-For crawling, you need to install scrapy, w3lib and python-dateutil:
+For crawling, install [`requirements.txt`](./requirements.txt)
 ```
+# Creates a virtual environment
 virtualenv gscraper
-. gscraper/bin/activate
-pip3 install scrapy w3lib python-dateutil
-```
 
-For the optional data aggregation step, you will need pandas:
-```
-pip3 install pandas
+# This may vary depending on your shell
+. gscraper/bin/activate
+
+pip3 install -r requirements.txt
 ```
 
 ## How To Run
@@ -87,17 +86,41 @@ The paging approach avoids hitting the Goodreads site too heavily. You should al
 
 ### Cleaning and Aggregating
 
-Once you've collected all the JSON files you need, you can aggregate them using the `aggregate_json.py` file.
+Note that since the output files are in jsonlines (.jl) format, you can simply cat them together into a single jl file...
 
-`python3 aggregate_json.py -f best_books_01_50.json young_adult_01_50.json -o goodreads.csv`
+```bash
+cat book_*.jl > all_books.jl
+cat author_*.jl > all_authors.jl
+```
 
-This cleans out some of the multivalued attributes, deduplicates rows, and writes it out to the specified CSV file.
+and load them in for analysis using pandas:
+
+```python
+import pandas as pd
+
+all_books = pd.read_json('all_books.jl', lines=True)
+all_authors = pd.read_json('all_authors.jl', lines=True)
+```
+
+Alternatively, you can use the `cleanup.py` file, which can be used as both a utility and a script.
+
+As a utility, it provides multiple functions that can be used to transform the data into a format that might be more amenable to analysis or visualization.
+
+As a script, it cleans up some of the multivalued attributes, deduplicates rows, and writes it out to the specified CSV file.
+
+```bash
+python3 cleanup.py \
+  --filenames best_books_01_50.jl young_adult_01_50.jl \
+  --output goodreads.csv
+```
 
 ### Extracting Kindle Price
 
 A useful feature is the Kindle price of the book on Amazon. Since this data is populated dynamically on the page, Scrapy is unable to extract it. We now use Selenium to get the Amazon product ID as well as the Kindle price:
 
-`python populate_kindle_price.py -f goodreads.csv -o goodreads_with_kindle_price.csv`
+```bash
+python3 populate_kindle_price.py -f goodreads.csv -o goodreads_with_kindle_price.csv
+```
 
 The reason we don't use Selenium for extracting the initial information is because Selenium is slow, since it loads up a browser and works through that. This is only an additional step to make the data slightly richer, but is completely optional.
 
