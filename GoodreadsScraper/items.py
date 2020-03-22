@@ -67,6 +67,22 @@ def extract_ratings(txt):
     return ratings
 
 
+def filter_asin(asin):
+    if asin and len(str(asin)) == 10:
+        return asin
+    return None
+
+
+def isbn_filter(isbn):
+    if isbn and len(str(isbn)) == 10 and isbn.isdigit():
+        return isbn
+
+
+def isbn13_filter(isbn):
+    if isbn and len(str(isbn)) == 13 and isbn.isdigit():
+        return isbn
+
+
 def filter_empty(vals):
     return [v.strip() for v in vals if v.strip()]
 
@@ -92,8 +108,10 @@ class BookItem(scrapy.Item):
 
     original_publish_year = Field(input_processor=MapCompose(extract_year, int))
 
-    isbn = Field()
-    asin = Field()
+    isbn = Field(input_processor=MapCompose(str.strip, isbn_filter))
+    isbn13 = Field(input_processor=MapCompose(str.strip, isbn13_filter))
+    asin = Field(input_processor=MapCompose(filter_asin))
+
     series = Field()
 
     # Lists
