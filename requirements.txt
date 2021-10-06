@@ -21,7 +21,7 @@ pyOpenSSL==19.1.0
 python-dateutil==2.8.1
 pytz==2019.3
 queuelib==1.5.0
-Scrapy==2.0.1
+Scrapy==2.5.1
 selenium==3.141.0
 service-identity==18.1.0
 six==1.14.0
