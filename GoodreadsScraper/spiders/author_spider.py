@@ -1,16 +1,23 @@
 """Spider to extract information from a /author/show page"""
 
 import scrapy
+from scrapy import signals
 
 from ..items import AuthorItem, AuthorLoader
 
 class AuthorSpider(scrapy.Spider):
     name = "author"
 
-    def __init__(self, author_crawl="False"):
+    def _set_crawler(self, crawler):
+        super()._set_crawler(crawler)
+        crawler.signals.connect(self.item_scraped_callback, signal=signals.item_scraped)
+
+    def __init__(self, author_crawl="False", item_scraped_callback=None):
         # The default arg for author_crawl is intentionally a string
         # since command line arguments to scrapy are strings
         super().__init__()
+
+        self.item_scraped_callback = item_scraped_callback
 
         # Convert author_crawl to str
         # just in case a boolean was passed in programmatically

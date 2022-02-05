@@ -6,7 +6,15 @@ from .author_spider import AuthorSpider
 from ..items import BookItem, BookLoader
 
 class BookSpider(scrapy.Spider):
-    """Extract information from a /book/show type page on Goodreads"""
+    """Extract information from a /book/show type page on Goodreads
+
+        Technically, this is not a Spider in the sense that
+        it is never initialized by scrapy. Consequently,
+         - its from_crawler method is never invoked
+         - its `crawler` attribute is not set
+         - it does not have a list of start_urls or start_requests
+         - running this spider with scrapy crawl will do nothing
+    """
     name = "book"
 
     def __init__(self):

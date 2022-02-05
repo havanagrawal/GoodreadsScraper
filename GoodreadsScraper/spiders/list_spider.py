@@ -1,23 +1,29 @@
 """Spider to extract URL's of books from a Listopia list on Goodreads"""
 
 import scrapy
-
+from scrapy import signals
 from .book_spider import BookSpider
 
 GOODREADS_URL_PREFIX = "https://www.goodreads.com"
 
 class ListSpider(scrapy.Spider):
-    """Extract URLs of books from a Listopia list on Goodreads
+    """Extract and crawl URLs of books from a Listopia list on Goodreads
 
-        This subsequently passes on the URLs to BookSpider
+        This subsequently passes on the URLs to BookSpider.
+        Note that this spider also yields BookItem's.
     """
     name = "list"
 
     goodreads_list_url = "https://www.goodreads.com/list/show/{}?page={}"
 
-    def __init__(self, list_name, start_page_no, end_page_no):
+    def _set_crawler(self, crawler):
+        super()._set_crawler(crawler)
+        crawler.signals.connect(self.item_scraped_callback, signal=signals.item_scraped)
+
+    def __init__(self, list_name, start_page_no, end_page_no, item_scraped_callback=None):
         super().__init__()
         self.book_spider = BookSpider()
+        self.item_scraped_callback = item_scraped_callback
 
         self.start_urls = []
         for page_no in range(int(start_page_no), int(end_page_no) + 1):
@@ -25,7 +31,7 @@ class ListSpider(scrapy.Spider):
             self.start_urls.append(list_url)
 
     def parse(self, response):
-        list_of_books = response.css("a.bookTitle::attr(href)").extract()
+        book_urls = response.css("a.bookTitle::attr(href)").extract()
 
-        for book in list_of_books:
-            yield response.follow(book, callback=self.book_spider.parse)
+        for book_url in book_urls:
+            yield response.follow(book_url, callback=self.book_spider.parse)

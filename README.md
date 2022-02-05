@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Python version](https://img.shields.io/badge/python-3.4+-blue.svg)
+![Python version](https://img.shields.io/badge/python-3.8+-blue.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 <h5>A full-fledged web crawler for Goodreads</h5>
