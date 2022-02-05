@@ -45,44 +45,39 @@ pip3 install -r requirements.txt
 
 ## How To Run
 
+Run `python3 crawl.py --help` for all sub-commands that the CLI offers.
+
 ### Author Crawls
 
 Run the following command to crawl all authors on the Goodreads website:
 
 ```bash
-scrapy crawl \
-  --loglevel=INFO \
-  --logfile=scrapy.log \
-  -a author_crawl=true \
-  -s OUTPUT_FILE_SUFFIX=all \
-  author
+python3 crawl.py author
 ```
 
 By default, this will store the result to a file called `author_all.jl`
 
+Use `python3 crawl.py author --help` for all options and defaults.
+
 ### List Crawls
 
-Run the following command to crawl all books from the first 25 pages of a Listopia list (say 1.Best_Books_Ever). This will store all the books in a file called `book_best_001_025.jl`, and all authors in a file called `author_best_001_025.jl`.
+Run the following command to crawl all books from the first 50 pages of a Listopia list (say 1.Best_Books_Ever). This will
 
 ```bash
-scrapy crawl \
-  --logfile=scrapy.log \
-  -a start_page_no=1 \
-  -a end_page_no=25 \
-  -a list_name="1.Best_Books_Ever" \
-  -s OUTPUT_FILE_SUFFIX="best_001_025" \
-  list
+python3 crawl.py list \
+  --list_name="1.Best_Books_Ever" \
+  --start_page=1 \
+  --end_page=50 \
+  --output_file_suffix="best_001_050"
 ```
 
-Alternatively, run the `run_scraper.sh` with 4 command line arguments; the list name, the start page, the end page, and the prefix with which you want the JSON file to be stored.
-
-For instance:
-
-`./run_scraper.sh "1.Best_Books_Ever" 1 50 best_books`
-
-will crawl the first 50 pages of [this list](https://www.goodreads.com/list/show/1.Best_Books_Ever), which is approximately around 5k books, and generate a file called `best_books_01_50.jl`.
+This will
+1. crawl the first 50 pages of [this list](https://www.goodreads.com/list/show/1.Best_Books_Ever), which is approximately around 5k books, and
+1. Store all the books in a file called `book_best_001_050.jl`, and all authors in a file called `author_best_001_050.jl`.
 
 The paging approach avoids hitting the Goodreads site too heavily. You should also ideally set the `DOWNLOAD_DELAY` to at least 1.
+
+Use `python3 crawl.py list --help` for all options and defaults.
 
 ### Cleaning and Aggregating
 
@@ -93,7 +88,7 @@ cat book_*.jl > all_books.jl
 cat author_*.jl > all_authors.jl
 ```
 
-and load them in for analysis using pandas:
+and load them in for analysis using pandas (not included in requirements.txt):
 
 ```python
 import pandas as pd
@@ -119,6 +114,10 @@ python3 cleanup.py \
 A useful feature is the Kindle price of the book on Amazon. Since this data is populated dynamically on the page, Scrapy is unable to extract it. We now use Selenium to get the Amazon product ID as well as the Kindle price:
 
 ```bash
+# Install selenium, not included in requirements.txt
+pip3 install selenium
+
+# Run the Kindle price populator script
 python3 populate_kindle_price.py -f goodreads.csv -o goodreads_with_kindle_price.csv
 ```
 
@@ -151,7 +150,7 @@ Now the data are ready to be analyzed, visualized and basically anything else yo
 | places | A list of places (locations) that occur in this novel |
 | rating_histogram | A dictionary that has individual rating counts (5, 4, 3, 2, 1) |
 
-\* Goodreads [distinguishes between authors of the same name](https://www.goodreads.com/help/show/20-separating-authors-with-the-same-name) by introducing additional spaces between their names, so this column should be treated with special consideration during cleaning.  
+\* Goodreads [distinguishes between authors of the same name](https://www.goodreads.com/help/show/20-separating-authors-with-the-same-name) by introducing additional spaces between their names, so this column should be treated with special consideration during cleaning.
 \*\* While there may be multiple authors for a novel, the scraper only records the first one.
 
 ### Author
@@ -169,8 +168,8 @@ Now the data are ready to be analyzed, visualized and basically anything else yo
 | num_ratings | The total number of ratings for all books by this author |
 | about | A short blurb about this author \*\* |
 
-\* In some cases the death date appears to be earlier than the birth date. This is most likely because the dates are BC, and should be inspected to validate this.  
-\*\* This blurb is most likely incomplete because it is shortened, and the complete version is available only through a Javascript function (which Scrapy is incapable of executing). If this is a desired field, then the URL can be used in conjunction with a library like selenium to extract the entire blurb.  
+\* In some cases the death date appears to be earlier than the birth date. This is most likely because the dates are BC, and should be inspected to validate this.
+\*\* This blurb is most likely incomplete because it is shortened, and the complete version is available only through a Javascript function (which Scrapy is incapable of executing). If this is a desired field, then the URL can be used in conjunction with a library like selenium to extract the entire blurb.
 
 ## Note About Temporality
 
@@ -184,7 +183,7 @@ What can you do with these data? Well, here are a few ideas:
 2. One could perform **hypothesis testing** to confirm/reject if:
     1. Female authors have the same number of ratings/reviews as male authors
     1. Fantasy novels have a higher average rating than non-fiction novels
-3. As mentioned [here](#note-about-temporality), Goodreads is a dynamic platform, and thus if one chooses to collect these data periodically, one could generate **time-series data**, and observe trends for a particular novel/author over time. One could also perform event detection to determine if the author made a breakthrough in their writing career.  
+3. As mentioned [here](#note-about-temporality), Goodreads is a dynamic platform, and thus if one chooses to collect these data periodically, one could generate **time-series data**, and observe trends for a particular novel/author over time. One could also perform event detection to determine if the author made a breakthrough in their writing career.
 
 
 ## Contributing

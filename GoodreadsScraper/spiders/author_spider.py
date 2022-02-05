@@ -11,7 +11,10 @@ class AuthorSpider(scrapy.Spider):
         # The default arg for author_crawl is intentionally a string
         # since command line arguments to scrapy are strings
         super().__init__()
-        self.author_crawl = author_crawl.lower() in {"true", "yes", "y"}
+
+        # Convert author_crawl to str
+        # just in case a boolean was passed in programmatically
+        self.author_crawl = str(author_crawl).lower() in {"true", "yes", "y"}
         if self.author_crawl:
             self.start_urls = ["https://www.goodreads.com/", "https://www.goodreads.com/author/on_goodreads"]
 

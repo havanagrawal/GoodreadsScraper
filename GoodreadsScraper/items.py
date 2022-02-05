@@ -11,7 +11,7 @@ import scrapy
 from scrapy import Field
 from scrapy.loader import ItemLoader
 
-from scrapy.loader.processors import Identity, Compose, MapCompose, TakeFirst, Join
+from itemloaders.processors import Identity, Compose, MapCompose, TakeFirst, Join
 
 from dateutil.parser import parse as dateutil_parse
 from w3lib.html import remove_tags
@@ -58,12 +58,15 @@ def extract_ratings(txt):
         |----------------------------------------------------------|
     """
     codelines = "".join(txt).split(";")
-    rating_code = [line.strip() for line in codelines if "renderRatingGraph" in line]
+    rating_code = [
+        line.strip() for line in codelines if "renderRatingGraph" in line
+    ]
     if not rating_code:
         return None
     rating_code = rating_code[0]
-    rating_array = rating_code[rating_code.index("[") + 1 : rating_code.index("]")]
-    ratings = {5 - i:int(x) for i, x in enumerate(rating_array.split(","))}
+    rating_array = rating_code[rating_code.index("[") +
+                               1:rating_code.index("]")]
+    ratings = {5 - i: int(x) for i, x in enumerate(rating_array.split(","))}
     return ratings
 
 
@@ -101,12 +104,14 @@ class BookItem(scrapy.Item):
     num_ratings = Field(input_processor=MapCompose(str.strip, int))
     num_reviews = Field(input_processor=MapCompose(str.strip, int))
     avg_rating = Field(input_processor=MapCompose(str.strip, float))
-    num_pages = Field(input_processor=MapCompose(str.strip, num_page_extractor, int))
+    num_pages = Field(
+        input_processor=MapCompose(str.strip, num_page_extractor, int))
 
     language = Field(input_processor=MapCompose(str.strip))
     publish_date = Field(input_processor=extract_publish_dates)
 
-    original_publish_year = Field(input_processor=MapCompose(extract_year, int))
+    original_publish_year = Field(
+        input_processor=MapCompose(extract_year, int))
 
     isbn = Field(input_processor=MapCompose(str.strip, isbn_filter))
     isbn13 = Field(input_processor=MapCompose(str.strip, isbn13_filter))
@@ -147,9 +152,9 @@ class AuthorItem(scrapy.Item):
     # Blobs
     about = Field(
         # Take the first match, remove HTML tags, convert to list of lines, remove empty lines, remove the "edit data" prefix
-        input_processor=Compose(TakeFirst(), remove_tags, split_by_newline, filter_empty, lambda s: s[1:]),
-        output_processor=Join()
-    )
+        input_processor=Compose(TakeFirst(), remove_tags, split_by_newline,
+                                filter_empty, lambda s: s[1:]),
+        output_processor=Join())
 
 
 class AuthorLoader(ItemLoader):
