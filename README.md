@@ -17,6 +17,10 @@ A small Python project to pull data from Goodreads using Scrapy and Selenium
 1. [How To Run](#how-to-run)
     1. [Author Crawls](#author-crawls)
     1. [List Crawls](#list-crawls)
+    1. [My Books (Shelf) Crawls](#my-books-shelf-crawls)
+1. [Data Enrichment](#data-enrichment)
+    1. [Cleaning and Aggregating](#cleaning-and-aggregating)
+    1. [Extracting Kindle Price](#extracting-kindle-price)
 1. [Data Schema](#data-schema)
     1. [Book](#book)
     1. [Author](#author)
@@ -46,6 +50,11 @@ pip3 install -r requirements.txt
 ## How To Run
 
 Run `python3 crawl.py --help` for all sub-commands that the CLI offers.
+
+Currently supported subcommands are:
+1. author
+1. list
+1. mybooks
 
 ### Author Crawls
 
@@ -78,6 +87,20 @@ This will
 The paging approach avoids hitting the Goodreads site too heavily. You should also ideally set the `DOWNLOAD_DELAY` to at least 1.
 
 Use `python3 crawl.py list --help` for all options and defaults.
+
+### My Books (Shelf) Crawls
+
+Run the following command to crawl all books from the `read` shelf for Emma Watson:
+
+```bash
+python3 crawl.py mybooks \
+  --shelf="read" \
+  --user-id="50993735-emma-watson"
+```
+
+Use `python3 crawl.py mybooks --help` for all options and defaults.
+
+## Data Enrichment
 
 ### Cleaning and Aggregating
 
