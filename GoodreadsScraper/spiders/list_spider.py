@@ -4,13 +4,11 @@ import scrapy
 from scrapy import signals
 from .book_spider import BookSpider
 
-GOODREADS_URL_PREFIX = "https://www.goodreads.com"
-
 class ListSpider(scrapy.Spider):
     """Extract and crawl URLs of books from a Listopia list on Goodreads
 
         This subsequently passes on the URLs to BookSpider.
-        Note that this spider also yields BookItem's.
+        Consequently, this spider also yields BookItem's and AuthorItem's.
     """
     name = "list"
 
@@ -20,7 +18,7 @@ class ListSpider(scrapy.Spider):
         super()._set_crawler(crawler)
         crawler.signals.connect(self.item_scraped_callback, signal=signals.item_scraped)
 
-    def __init__(self, list_name, start_page_no, end_page_no, item_scraped_callback=None):
+    def __init__(self, list_name, start_page_no, end_page_no, url=None, item_scraped_callback=None):
         super().__init__()
         self.book_spider = BookSpider()
         self.item_scraped_callback = item_scraped_callback

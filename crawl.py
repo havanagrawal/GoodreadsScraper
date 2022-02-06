@@ -1,5 +1,6 @@
 import click
-from rich.progress import Progress, TaskID
+from rich.progress import Progress, TaskID, Console, track
+from rich.live import Live
 from rich.progress import SpinnerColumn, BarColumn, TextColumn, TimeRemainingColumn, TimeElapsedColumn
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
@@ -38,7 +39,7 @@ def crawl(ctx, log_file="scrapy.log"):
               type=str)
 @click.pass_context
 def list(ctx, list_name: str, start_page: int, end_page: int,
-         output_file_suffix):
+         output_file_suffix: str):
     """Crawl a Goodreads Listopia List.
 
     Crawl all pages between start_page and end_page (inclusive) of a Goodreads Listopia List.
@@ -118,6 +119,48 @@ def author(ctx, output_file_suffix='all'):
                item_scraped_callback=progress_updater)
 
 
+@crawl.command()
+@click.option(
+    "--user_id",
+    required=True,
+    help="The user ID. This can be determined from the URL in your profile, and is of the form '123456-foo-bar'",
+    prompt=True,
+    type=str)
+@click.option("--shelf",
+              type=click.Choice(
+                  ["read", "to-read", "currently-reading", "all"]),
+              help="A shelf from the user's 'My Books' tab.",
+              default="all")
+@click.option("--output_file_suffix",
+              help="The suffix for the output file. [default: user_id]",
+              type=str)
+@click.pass_context
+def my_books(ctx, user_id: str, shelf: str, output_file_suffix: str):
+    """Crawl shelves from the "My Books" tab for a user."""
+    if not output_file_suffix:
+        output_file_suffix = user_id
+    click.echo(f"Crawling Goodreads profile {user_id} for shelf {shelf}")
+
+    # On "My Books", each page of has about ~30 books
+    # The last page may have less
+    # However, we don't know how many total books there could be on a shelf
+    # So until we can figure it out, show an infinite spinner
+    progress_updater = ProgressUpdater(infinite=True)
+
+    with progress_updater.progress:
+        progress_updater.add_task_for(BookItem,
+                                    description=f"[red]Scraping books for shelf '{shelf}'...")
+        progress_updater.add_task_for(AuthorItem,
+                                    description=f"[green]Scraping authors for shelf '{shelf}'...")
+
+        _crawl('mybooks',
+            ctx.obj["LOG_FILE"],
+            f"{output_file_suffix}",
+            user_id=user_id,
+            shelf=shelf,
+            item_scraped_callback=progress_updater)
+
+
 def _crawl(spider_name, log_file, output_file_suffix, **crawl_kwargs):
     settings = get_project_settings()
 
@@ -136,7 +179,12 @@ def _crawl(spider_name, log_file, output_file_suffix, **crawl_kwargs):
 
 
 class ProgressUpdater():
-    """Callback class for updating the progress on the console"""
+    """Callback class for updating the progress on the console.
+
+        Internally, this maintains a map from the item type to a TaskID.
+        When the callback is invoked, it tries to find a match for the scraped item,
+        and advance the corresponding task progress.
+    """
 
     def __init__(self, infinite=False):
         if infinite:
