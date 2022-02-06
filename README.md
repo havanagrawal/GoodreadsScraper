@@ -61,7 +61,7 @@ Use `python3 crawl.py author --help` for all options and defaults.
 
 ### List Crawls
 
-Run the following command to crawl all books from the first 50 pages of a Listopia list (say 1.Best_Books_Ever). This will
+Run the following command to crawl all books from the first 50 pages of a Listopia list (say 1.Best_Books_Ever):
 
 ```bash
 python3 crawl.py list \
@@ -72,8 +72,8 @@ python3 crawl.py list \
 ```
 
 This will
-1. crawl the first 50 pages of [this list](https://www.goodreads.com/list/show/1.Best_Books_Ever), which is approximately around 5k books, and
-1. Store all the books in a file called `book_best_001_050.jl`, and all authors in a file called `author_best_001_050.jl`.
+1. crawl the first 50 pages of [this list](https://www.goodreads.com/list/show/1.Best_Books_Ever), which is ~5k books, and
+1. store all books in a file called `book_best_001_050.jl`, and all authors in a file called `author_best_001_050.jl`.
 
 The paging approach avoids hitting the Goodreads site too heavily. You should also ideally set the `DOWNLOAD_DELAY` to at least 1.
 
@@ -169,6 +169,7 @@ Now the data are ready to be analyzed, visualized and basically anything else yo
 | about | A short blurb about this author \*\* |
 
 \* In some cases the death date appears to be earlier than the birth date. This is most likely because the dates are BC, and should be inspected to validate this.
+
 \*\* This blurb is most likely incomplete because it is shortened, and the complete version is available only through a Javascript function (which Scrapy is incapable of executing). If this is a desired field, then the URL can be used in conjunction with a library like selenium to extract the entire blurb.
 
 ## Note About Temporality

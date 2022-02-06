@@ -17,23 +17,24 @@ from GoodreadsScraper.items import BookItem, AuthorItem
 def crawl(ctx, log_file="scrapy.log"):
     ctx.ensure_object(dict)
     ctx.obj['LOG_FILE'] = log_file
+    ctx.max_content_width = 100
+    ctx.show_default = True
 
 
 @crawl.command()
-@click.option(
-    "--list_name",
-    required=True,
-    help=
-    "Goodreads Listopia list name. It can be determined from the URL of the list. For e.g. the name of the list https://www.goodreads.com/list/show/1.Best_Books_Ever is '1.Best_Books_Ever'",
-    type=str)
-@click.option("--start_page",
-              help="Start page number",
-              default=1,
-              type=int,
-              show_default=True)
-@click.option("--end_page", required=True, help="End page number", type=int)
+@click.option("--list_name",
+              required=True,
+              help="Goodreads Listopia list name.",
+              prompt=True,
+              type=str)
+@click.option("--start_page", help="Start page number", default=1, type=int)
+@click.option("--end_page",
+              required=True,
+              help="End page number",
+              prompt=True,
+              type=int)
 @click.option("--output_file_suffix",
-              help="The suffix for the output file. Defaults to the list name",
+              help="The suffix for the output file. [default: list name]",
               type=str)
 @click.pass_context
 def list(ctx, list_name: str, start_page: int, end_page: int,
@@ -41,6 +42,10 @@ def list(ctx, list_name: str, start_page: int, end_page: int,
     """Crawl a Goodreads Listopia List.
 
     Crawl all pages between start_page and end_page (inclusive) of a Goodreads Listopia List.
+
+    \b
+    The Listopia list name can be determined from the URL of the list.
+    For e.g. the name of the list https://www.goodreads.com/list/show/1.Best_Books_Ever is '1.Best_Books_Ever'
 
     \b
     By default, two files will be created:
