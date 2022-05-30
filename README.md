@@ -93,12 +93,12 @@ Use `python3 crawl.py list --help` for all options and defaults.
 Run the following command to crawl all books from the `read` shelf for Emma Watson:
 
 ```bash
-python3 crawl.py mybooks \
+python3 crawl.py my-books \
   --shelf="read" \
-  --user-id="50993735-emma-watson"
+  --user_id="50993735-emma-watson"
 ```
 
-Use `python3 crawl.py mybooks --help` for all options and defaults.
+Use `python3 crawl.py my-books --help` for all options and defaults.
 
 ## Data Enrichment
 
