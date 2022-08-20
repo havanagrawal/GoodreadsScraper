@@ -119,7 +119,7 @@ class BookItem(scrapy.Item):
 
     series = Field()
     
-    cover = Field(input_processor=MapCompose(str.strip))
+    cover = Field()
 
     # Lists
     awards = Field(output_processor=Identity())

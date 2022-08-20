@@ -56,7 +56,7 @@ class BookSpider(scrapy.Spider):
 
         loader.add_css('rating_histogram', 'script[type*="protovis"]::text')
 
-        loader.add_css("cover", "img.ResponsiveImage::attr(src)")
+        loader.add_css("cover", "img#coverImage::attr(src)")
 
         yield loader.load_item()
 
