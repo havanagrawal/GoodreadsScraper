@@ -128,7 +128,7 @@ def author(ctx, output_file_suffix='all'):
     type=str)
 @click.option("--shelf",
               type=click.Choice(
-                  ["read", "to-read", "currently-reading", "all"]),
+                  ["read", "to-read", "currently-reading", "all", "unread", "unfinished"]),
               help="A shelf from the user's 'My Books' tab.",
               default="all")
 @click.option("--output_file_suffix",

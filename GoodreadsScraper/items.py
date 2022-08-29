@@ -118,6 +118,8 @@ class BookItem(scrapy.Item):
     asin = Field(input_processor=MapCompose(filter_asin))
 
     series = Field()
+    
+    cover = Field()
 
     # Lists
     awards = Field(output_processor=Identity())
