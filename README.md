@@ -160,7 +160,7 @@ Now the data are ready to be analyzed, visualized and basically anything else yo
 | description   | Description of the book. May contain HTML/unicode characters. |
 | format   | The format in which this book was published |
 | imageUrl | Image URL for the book cover |
-| author  | The author \* \*\* |
+| author  | The author (or list of authors if there are multiple) \* |
 | asin | The [Amazon Standard Identifier Number](https://en.wikipedia.org/wiki/Amazon_Standard_Identification_Number) for this edition |
 | isbn | The [International Standard Book Number](https://en.wikipedia.org/wiki/International_Standard_Book_Number) for this edition |
 | isbn13 | The [International Standard Book Number](https://en.wikipedia.org/wiki/International_Standard_Book_Number) for this edition, in ISBN13 format |
@@ -179,7 +179,6 @@ Now the data are ready to be analyzed, visualized and basically anything else yo
 | ~original_publish_year~ | The original year of publication for this novel |
 
 \* Goodreads [distinguishes between authors of the same name](https://www.goodreads.com/help/show/20-separating-authors-with-the-same-name) by introducing additional spaces between their names, so this column should be treated with special consideration during cleaning.
-\*\* While there may be multiple authors for a novel, the scraper only records the first one.
 
 ### Author
 
@@ -187,13 +186,13 @@ Now the data are ready to be analyzed, visualized and basically anything else yo
 |---------|-------------|
 | url     | The Goodreads URL |
 | name    | Name of the author |
-| birth_date | The author's birth date |
-| death_date | The author's death date \* |
+| birthDate | The author's birth date |
+| deathDate | The author's death date \* |
 | genres | A list of genres this author writes about |
 | influences | A list of authors who influenced this author |
-| avg_rating | The average rating of all books by this author |
-| num_reviews | The total number of reviews for all books by this author |
-| num_ratings | The total number of ratings for all books by this author |
+| avgRating | The average rating of all books by this author |
+| reviewsCount | The total number of reviews for all books by this author |
+| ratingsCount | The total number of ratings for all books by this author |
 | about | A short blurb about this author \*\* |
 
 \* In some cases the death date appears to be earlier than the birth date. This is most likely because the dates are BC, and should be inspected to validate this.
