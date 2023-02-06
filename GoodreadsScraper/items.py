@@ -132,7 +132,7 @@ class BookItem(scrapy.Item):
 
     title = Field(input_processor=MapCompose(json_field_extractor_v2('props.pageProps.apolloState.Book*.title')))
     titleComplete = Field(input_processor=MapCompose(json_field_extractor_v2('props.pageProps.apolloState.Book*.titleComplete')))
-    description = Field(input_processor=MapCompose(json_field_extractor_v2('props.pageProps.apolloState.Book*.description')))
+    description = Field(input_processor=MapCompose(json_field_extractor_v2('props.pageProps.apolloState.Book*.description'), remove_tags))
     imageUrl = Field(input_processor=MapCompose(json_field_extractor_v2('props.pageProps.apolloState.Book*.imageUrl')))
     genres = Field(input_processor=MapCompose(json_field_extractor_v2('props.pageProps.apolloState.Book*.bookGenres[].genre.name')), output_processor=Compose(set, list))
     asin = Field(input_processor=MapCompose(json_field_extractor_v2('props.pageProps.apolloState.Book*.details.asin')))
@@ -167,12 +167,12 @@ class AuthorItem(scrapy.Item):
     url = Field()
 
     name = Field()
-    birth_date = Field(input_processor=MapCompose(safe_parse_date))
-    death_date = Field(input_processor=MapCompose(safe_parse_date))
+    birthDate = Field(input_processor=MapCompose(safe_parse_date))
+    deathDate = Field(input_processor=MapCompose(safe_parse_date))
 
-    avg_rating = Field(serializer=float)
-    num_ratings = Field(serializer=int)
-    num_reviews = Field(serializer=int)
+    avgRating = Field(serializer=float)
+    ratingsCount = Field(serializer=int)
+    reviewsCount = Field(serializer=int)
 
     # Lists
     genres = Field(output_processor=Compose(set, list))
