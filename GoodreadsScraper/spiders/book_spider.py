@@ -27,51 +27,34 @@ class BookSpider(scrapy.Spider):
 
         loader.add_value('url', response.request.url)
 
-        # loader.add_css("title", "[data-testid=bookTitle]::text")
-        loader.add_css("author", "span.ContributorLink__name[data-testid=name]::text")
-
-        # loader.add_css("num_ratings", "[data-testid=ratingsCount]::text")
-        # loader.add_css("num_reviews", "[data-testid=reviewsCount]::text")
-        # loader.add_css("avg_rating", "div.RatingStatistics__rating::text")
-        # loader.add_css("num_pages", "[data-testid=pagesFormat]::text")
-
-        loader.add_css('publish_date', '[data-testid=publicationInfo]::text')
-        loader.add_css('publish_date', 'nobr.greyText::text')
-
-        loader.add_css('original_publish_year', 'nobr.greyText::text')
-
-        # loader.add_css("genres", 'div.left>a.bookPageGenreLink[href*="/genres/"]::text')
-
-        loader.add_css('characters', 'a[href*="/characters/"]::text')
-        loader.add_css('places', 'div.infoBoxRowItem>a[href*=places]::text')
-
-        loader.add_css('rating_histogram', 'script[type*="protovis"]::text')
-
         # The new Goodreads page sends JSON in a script tag
         # that has these values
 
         loader.add_css('title', 'script#__NEXT_DATA__::text')
-        loader.add_css('title_complete', 'script#__NEXT_DATA__::text')
+        loader.add_css('titleComplete', 'script#__NEXT_DATA__::text')
         loader.add_css('description', 'script#__NEXT_DATA__::text')
-        loader.add_css('image_url', 'script#__NEXT_DATA__::text')
+        loader.add_css('imageUrl', 'script#__NEXT_DATA__::text')
         loader.add_css('genres', 'script#__NEXT_DATA__::text')
         loader.add_css('asin', 'script#__NEXT_DATA__::text')
         loader.add_css('isbn', 'script#__NEXT_DATA__::text')
         loader.add_css('isbn13', 'script#__NEXT_DATA__::text')
         loader.add_css('publisher', 'script#__NEXT_DATA__::text')
         loader.add_css('series', 'script#__NEXT_DATA__::text')
+        loader.add_css('author', 'script#__NEXT_DATA__::text')
+        loader.add_css('publishDate', 'script#__NEXT_DATA__::text')
 
-        loader.add_css('language', 'script[type*="json"]::text')
-        # loader.add_css('isbn', 'script[type*="json"]::text')
-        # loader.add_css('isbn13', 'script[type*="json"]::text')
-        loader.add_css('num_pages', 'script[type*="json"]::text')
-        loader.add_css("num_ratings", 'script[type*="json"]::text')
-        loader.add_css("num_reviews", 'script[type*="json"]::text')
-        loader.add_css("avg_rating", 'script[type*="json"]::text')
-        loader.add_css("awards", 'script[type*="json"]::text')
-        loader.add_css("book_format", 'script[type*="json"]::text')
+        loader.add_css('characters', 'script#__NEXT_DATA__::text')
+        loader.add_css('places', 'script#__NEXT_DATA__::text')
+        loader.add_css('ratingHistogram', 'script#__NEXT_DATA__::text')
+        loader.add_css("ratingsCount", 'script#__NEXT_DATA__::text')
+        loader.add_css("reviewsCount", 'script#__NEXT_DATA__::text')
+        loader.add_css('numPages', 'script#__NEXT_DATA__::text')
+        loader.add_css("format", 'script#__NEXT_DATA__::text')
+
+        loader.add_css('language', 'script#__NEXT_DATA__::text')
+        loader.add_css("awards", 'script#__NEXT_DATA__::text')
 
         yield loader.load_item()
 
-        author_url = response.css('a.authorName::attr(href)').extract_first()
+        author_url = response.css('a.ContributorLink::attr(href)').extract_first()
         yield response.follow(author_url, callback=self.author_spider.parse)

@@ -156,22 +156,27 @@ Now the data are ready to be analyzed, visualized and basically anything else yo
 |---------|-------------|
 | url     | The Goodreads URL |
 | title   | The title |
+| titleComplete   | The complete title |
+| description   | Description of the book. May contain HTML/unicode characters. |
+| format   | The format in which this book was published |
+| imageUrl | Image URL for the book cover |
 | author  | The author \* \*\* |
 | asin | The [Amazon Standard Identifier Number](https://en.wikipedia.org/wiki/Amazon_Standard_Identification_Number) for this edition |
 | isbn | The [International Standard Book Number](https://en.wikipedia.org/wiki/International_Standard_Book_Number) for this edition |
-| num_ratings | The number of user ratings |
-| num_reviews | The number of user reviews |
-| avg_rating | The average rating (1 - 5) |
-| num_pages | The total number of pages |
+| isbn13 | The [International Standard Book Number](https://en.wikipedia.org/wiki/International_Standard_Book_Number) for this edition, in ISBN13 format |
+| ratingsCount | The number of user ratings |
+| reviewsCount | The number of user text reviews |
+| avgRating | The average rating (1 - 5) |
+| numPages | The total number of pages |
 | language | The language for this edition |
-| publish_date | The publish date for this edition |
-| original_publish_year | The original year of publication for this novel |
+| publishDate | The publish date for this edition |
 | series | The series of which this novel is a part |
 | genres | A list of genres/shelves |
-| awards | A list of awards (if any) won by this novel |
+| awards | A list of awards (if any) won by this novel. Each award is a JSON object. |
 | characters | An (incomplete) list of characters that occur in this novel |
 | places | A list of places (locations) that occur in this novel |
-| rating_histogram | A dictionary that has individual rating counts (5, 4, 3, 2, 1) |
+| ratingHistogram | A list that has individual rating counts (5, 4, 3, 2, 1) |
+| ~original_publish_year~ | The original year of publication for this novel |
 
 \* Goodreads [distinguishes between authors of the same name](https://www.goodreads.com/help/show/20-separating-authors-with-the-same-name) by introducing additional spaces between their names, so this column should be treated with special consideration during cleaning.
 \*\* While there may be multiple authors for a novel, the scraper only records the first one.
