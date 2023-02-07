@@ -27,7 +27,7 @@ ROBOTSTXT_OBEY = True
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 1
+DOWNLOAD_DELAY = 0.1
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -67,6 +67,13 @@ DOWNLOAD_DELAY = 1
 ITEM_PIPELINES = {
     'GoodreadsScraper.pipelines.JsonLineItemSegregator': 300,
 }
+
+# If you want to run the tool in multiple runs
+# but avoid scraping data for the same books/authors
+# uncomment the following line (if commented)
+# This will create a file in the directory where you run
+# that keeps track of seen URLs, and avoids scraping duplicate URLs
+# DUPEFILTER_CLASS = 'GoodreadsScraper.custom_filters.SeenUrlFilter'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
