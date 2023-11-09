@@ -172,14 +172,14 @@ def my_books(ctx, user_id: str, shelf: str, output_file_suffix: str):
               type=str)
 @click.pass_context
 def single_author(ctx, author_id: str, output_file_suffix: str):
-    """Crawl shelves from the "My Books" tab for a user."""
+    """Crawl books and author info for all books by a specific author."""
     if not output_file_suffix:
         output_file_suffix = author_id
     click.echo(f"Crawling Goodreads author profile {author_id}")
 
-    # On "My Books", each page of has about ~30 books
+    # On the author's page, each page shows about ~30 books
     # The last page may have less
-    # However, we don't know how many total books there could be on a shelf
+    # However, we don't know how many distinct works this author has
     # So until we can figure it out, show an infinite spinner
     progress_updater = ProgressUpdater(infinite=True)
 

@@ -6,7 +6,7 @@ from .book_spider import BookSpider
 
 
 class SingleAuthorSpider(scrapy.Spider):
-    """Extract and crawl URLs of books from one of the "My Books" shelf for a user
+    """Extract and crawl URLs of books by a specific author
 
         This subsequently passes on the URLs to BookSpider.
         Consequently, this spider also yields BookItem's and AuthorItem's.
