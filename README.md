@@ -213,6 +213,9 @@ What can you do with these data? Well, here are a few ideas:
     1. Fantasy novels have a higher average rating than non-fiction novels
 3. As mentioned [here](#note-about-temporality), Goodreads is a dynamic platform, and thus if one chooses to collect these data periodically, one could generate **time-series data**, and observe trends for a particular novel/author over time. One could also perform event detection to determine if the author made a breakthrough in their writing career.
 
+## Derivative Projects
+
+- https://github.com/yamesyung/SoloScribe: Django project which runs locally. Uses data scraped from Goodreads and the Goodreads export file to create a personal library.
 
 ## Contributing
 
