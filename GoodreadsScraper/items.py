@@ -139,7 +139,7 @@ class BookItem(scrapy.Item):
     isbn = Field(input_processor=MapCompose(json_field_extractor_v2('props.pageProps.apolloState.Book*.details.isbn')))
     isbn13 = Field(input_processor=MapCompose(json_field_extractor_v2('props.pageProps.apolloState.Book*.details.isbn13')))
     publisher = Field(input_processor=MapCompose(json_field_extractor_v2('props.pageProps.apolloState.Book*.details.publisher')))
-    publishDate = Field(input_processor=MapCompose(json_field_extractor_v2('props.pageProps.apolloState.Book*.details.publicationTime')))
+    publishDate = Field(input_processor=MapCompose(json_field_extractor_v2('props.pageProps.apolloState.Work*.details.publicationTime')))
     series = Field(input_processor=MapCompose(json_field_extractor_v2('props.pageProps.apolloState.Series*.title')), output_processor=Compose(set, list))
 
     author = Field(input_processor=MapCompose(json_field_extractor_v2('props.pageProps.apolloState.Contributor*.name')), output_processor=Compose(set, list))
